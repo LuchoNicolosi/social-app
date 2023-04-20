@@ -74,6 +74,13 @@ export const createPost = (req, res, next) => {
 };
 
 export const editPost = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation failed');
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
   const postId = req.params.postId;
   const { content, imageUrl } = req.body;
 

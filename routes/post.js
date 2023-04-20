@@ -23,7 +23,17 @@ router.post(
   ],
   createPost
 );
-router.put('/post/:postId', editPost);
+router.put(
+  '/post/:postId',
+  [
+    body('content')
+      .isLength({ min: 5 })
+      .not()
+      .isEmpty()
+      .withMessage('Please enter a valid content'),
+  ],
+  editPost
+);
 router.delete('/post/:postId', deletePost);
 
 export default router;
