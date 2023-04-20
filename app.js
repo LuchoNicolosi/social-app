@@ -13,6 +13,12 @@ app.use(express.json());
 
 app.use('/api/v1', routes);
 
+app.use((error, req, res, next) => {
+  const statusCode = error.statusCode || 500;
+  const message = error.message;
+  res.status(statusCode).json({ errorMessage: message });
+});
+
 mongoose
   .connect(process.env.DATA_BASE)
   .then(() => {
