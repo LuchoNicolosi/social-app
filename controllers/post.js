@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import { Post } from '../models/post.js';
 import { User } from '../models/user.js';
+import { clearImage } from '../util/clearImage.js';
 
 export const getPosts = (req, res, next) => {
   Post.find()
@@ -47,7 +48,15 @@ export const createPost = (req, res, next) => {
     error.data = errors.array();
     throw error;
   }
-  const { content, imageUrl } = req.body;
+
+  if (!req.file) {
+    const error = new Error('No image provided.');
+    error.statusCode = 422;
+    throw error;
+  }
+
+  const { content } = req.body;
+  const imageUrl = req.file.path.replace('\\', '/');
   let postUser;
   let creator;
 
@@ -103,20 +112,33 @@ export const editPost = (req, res, next) => {
     throw error;
   }
   const postId = req.params.postId;
-  const { content, imageUrl } = req.body;
+  const content = req.body.content;
+  let imageUrl = req.body.image;
 
+  if (req.file) {
+    imageUrl = req.file.path.replace('\\', '/');
+  }
+  if (!imageUrl) {
+    const error = new Error('No file picked.');
+    error.statusCode = 422;
+    throw error;
+  }
   Post.findById(postId)
     .then((post) => {
       if (!post) {
         const error = new Error('This posts not exits!');
-        error.statusCode = 422;
+        error.statusCode = 404;
         throw error;
       }
-      
+
       if (post.creator.toString() !== req.userId) {
         const error = new Error('Not authorized.');
         error.statusCode = 403;
         throw error;
+      }
+
+      if (imageUrl !== post.imageUrl) {
+        clearImage(post.imageUrl);
       }
 
       post.content = content;
@@ -150,6 +172,7 @@ export const deletePost = (req, res, next) => {
         error.statusCode = 403;
         throw error;
       }
+      clearImage(post.imageUrl);
       return Post.findByIdAndRemove(postId);
     })
 
