@@ -7,10 +7,22 @@ import {
   getPost,
 } from '../controllers/post.js';
 
+import { body } from 'express-validator';
+
 const router = Router();
 
 router.get('/posts', getPosts).get('/post/:postId', getPost);
-router.post('/post', createPost);
+router.post(
+  '/post',
+  [
+    body('content')
+      .isLength({ min: 5 })
+      .not()
+      .isEmpty()
+      .withMessage('Please enter a valid content'),
+  ],
+  createPost
+);
 router.put('/post/:postId', editPost);
 router.delete('/post/:postId', deletePost);
 
