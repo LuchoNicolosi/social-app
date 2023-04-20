@@ -6,12 +6,13 @@ import {
   deletePost,
   getPost,
 } from '../controllers/post.js';
-
 import { body } from 'express-validator';
+import { isAuth } from '../middlewares/isAuth.js';
 
 const router = Router();
 
-router.get('/posts', getPosts).get('/post/:postId', getPost);
+router.get('/posts', isAuth, getPosts);
+router.get('/post/:postId', isAuth, getPost);
 router.post(
   '/post',
   [
@@ -20,7 +21,7 @@ router.post(
       .not()
       .isEmpty()
       .withMessage('Please enter a valid content'),
-  ],
+  ], isAuth,
   createPost
 );
 router.put(
@@ -31,9 +32,9 @@ router.put(
       .not()
       .isEmpty()
       .withMessage('Please enter a valid content'),
-  ],
+  ], isAuth,
   editPost
 );
-router.delete('/post/:postId', deletePost);
+router.delete('/post/:postId', isAuth, deletePost);
 
 export default router;
