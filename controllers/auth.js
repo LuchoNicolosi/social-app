@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import { User } from '../models/user.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const signup = (req, res, next) => {
   const errors = validationResult(req);
@@ -38,6 +39,39 @@ export const signup = (req, res, next) => {
         message: 'Signup successfully!!!',
         userId: user._id,
       });
+    })
+    .catch((err) => next(err));
+};
+
+export const login = (req, res, next) => {
+  const { userName, password } = req.body;
+  let loadUser;
+  User.findOne({ userName: userName })
+    .then((user) => {
+      if (!user) {
+        const error = new Error('Username does not exist!');
+        error.statusCode = 422;
+        throw error;
+      }
+      loadUser = user;
+      return bcrypt.compare(password, user.password);
+    })
+    .then((isEqual) => {
+      if (!isEqual) {
+        const error = new Error('Incorrect password!');
+        error.statusCode = 422;
+        throw error;
+      }
+
+      const token = jwt.sign(
+        {
+          userName: userName,
+          user: loadUser._id.toString(),
+        },
+        process.env.JWT_SECRET
+      );
+
+      res.status(201).json({ message: 'Login successfully', token: token });
     })
     .catch((err) => next(err));
 };

@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { signup } from '../controllers/auth.js';
+import { login, signup } from '../controllers/auth.js';
 import { body } from 'express-validator';
 import { User } from '../models/user.js';
 
 const router = Router();
+
+router.post('/login', login);
 
 router.post(
   '/signup',
