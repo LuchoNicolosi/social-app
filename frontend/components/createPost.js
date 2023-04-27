@@ -17,13 +17,12 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import FormData from 'form-data';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useState } from 'react';
 
 export const CreatePost = ({ token }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [content, setContent] = useState('');
-  const [image, setImage] = useState();
+  const [image, setImage] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -47,10 +46,14 @@ export const CreatePost = ({ token }) => {
 
     const formData = new FormData();
     formData.append('content', content);
-    formData.append('imageUrl', image);
-
+    if (image) {
+      formData.append('imageUrl', image);
+    }
     try {
       await mutation.mutateAsync(formData);
+      if (image) {
+        setImage(image);
+      }
       onClose();
     } catch (error) {
       throw new Error('Something went wrong!');

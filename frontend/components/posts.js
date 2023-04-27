@@ -1,13 +1,14 @@
-import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, LinkBox, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { EditPost } from './editPost';
 import { DeletePost } from './deletePost';
 import { io } from 'socket.io-client';
-import { useRouter } from 'next/router';
 import { useQueryClient } from '@tanstack/react-query';
+i
 
 export const Posts = ({ post, token, userId }) => {
-  const router = useRouter();
+
+
   const queryClient = useQueryClient();
   const socket = io('http://localhost:8080');
 
@@ -29,12 +30,12 @@ export const Posts = ({ post, token, userId }) => {
         borderRight="1px"
         borderLeft="1px"
         borderBottom="1px"
-        p={12}
+        p={8}
         borderColor="gray"
       >
         <Flex
           w="full"
-          mb={3}
+          mb={6}
           gap={2}
           justifyContent="flex-start"
           alignItems="center"
@@ -72,16 +73,25 @@ export const Posts = ({ post, token, userId }) => {
             )}
           </Flex>
         </Flex>
-        <Link href={'/post/' + post._id}>
-          <Text mb={6} w="full" textAlign="start" fontSize="xl">
-            {post.content}
-          </Text>
+        <Flex w="full">
+          <Text fontSize="xl">{post.content}</Text>
+        </Flex>
+
+        {post.imageUrl && (
           <Image
+            mt={6}
             w="3xl"
             src={`http://localhost:8080/${post.imageUrl}`}
             alt={post.creator.name}
           />
-        </Link>
+        )}
+        <Box w="full" mt={6}>
+          <Link href={'/post/' + post._id}>
+            <Button variant="link" color="blue.100">
+              Ver post
+            </Button>
+          </Link>
+        </Box>
       </Flex>
     </Box>
   );

@@ -9,32 +9,20 @@ import {
   useDisclosure,
   Button,
 } from '@chakra-ui/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { useRef } from 'react';
 export const DeletePost = ({ postId, token }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async (formData) => {
-      return await fetch('http://localhost:8080/api/v1/home/post/' + postId, {
+  const handleDeletePost = async () => {
+    try {
+      await fetch('http://localhost:8080/api/v1/home/post/' + postId, {
         method: 'DELETE',
         headers: {
           Authorization: token,
         },
-        body: formData,
-      }).then((res) => res.json());
-    },
-    onSuccess: () => {
-      queryClient.refetchQueries(['posts']);
-    },
-  });
-
-  const handleDeletePost = async () => {
-    try {
-      await mutation.mutateAsync();
+      });
       onClose();
     } catch (error) {
       console.log(error);

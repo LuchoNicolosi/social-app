@@ -13,6 +13,7 @@ const Post = ({ post }) => {
   return (
     <Flex justifyContent="center" alignItems="flex-start">
       <Flex
+        w="md"
         alignItems="center"
         flexDirection="column"
         borderRight="1px"
@@ -44,14 +45,17 @@ const Post = ({ post }) => {
           </Box>
         </Flex>
 
-        <Text mb={6} w="full" textAlign="start" fontSize="xl">
+        <Text w="full" textAlign="start" fontSize="xl">
           {post.content}
         </Text>
-        <Image
-          w={550}
-          src={`http://localhost:8080/${post.imageUrl}`}
-          alt={post.creator.name}
-        />
+        {post.imageUrl && (
+          <Image
+            mt={6}
+            w={550}
+            src={`http://localhost:8080/${post.imageUrl}`}
+            alt={post.creator.name}
+          />
+        )}
       </Flex>
     </Flex>
   );

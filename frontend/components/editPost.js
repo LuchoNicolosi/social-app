@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
 export const EditPost = ({ postId, token }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [content, setContent] = useState('');
-  const [image, setImage] = useState();
+  const [image, setImage] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/home/post/' + postId, {
@@ -36,7 +36,9 @@ export const EditPost = ({ postId, token }) => {
       })
       .then(({ post }) => {
         setContent(post.content);
-        setImage(post.imageUrl);
+        if (post.imageUrl) {
+          setImage(post.imageUrl);
+        }
       })
       .catch((err) => console.log(err));
   }, []);
@@ -62,12 +64,13 @@ export const EditPost = ({ postId, token }) => {
 
     const formData = new FormData();
     formData.append('content', content);
-    formData.append('imageUrl', image);
+    formData.append('imageUrl', image || null);
 
     try {
       await mutation.mutateAsync(formData);
       setContent(content);
-      setImage(image);
+      setImage(image || null);
+
       onClose();
     } catch (error) {
       console.log(error);

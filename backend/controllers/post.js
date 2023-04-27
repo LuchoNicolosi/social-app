@@ -50,21 +50,16 @@ export const createPost = async (req, res, next) => {
     throw error;
   }
 
-  if (!req.file) {
-    const error = new Error('No image provided.');
-    error.statusCode = 422;
-    throw error;
-  }
   const content = req.body.content;
   let imageUrl = req.file;
 
-  if (req.file) {
+  if (req.file && imageUrl) {
     imageUrl = req.file.path.replace('\\', '/');
   }
 
   const post = new Post({
     content: content,
-    imageUrl: imageUrl,
+    imageUrl: imageUrl || null,
     creator: req.userId,
   });
 
@@ -116,16 +111,9 @@ export const editPost = async (req, res, next) => {
   }
 
   const content = req.body.content;
-  let imageUrl = req.body.imageUrl;
-
-  if (req.file) {
+  let imageUrl = req.file;
+  if (req.file && imageUrl) {
     imageUrl = req.file.path.replace('\\', '/');
-  }
-
-  if (!imageUrl) {
-    const error = new Error('No file picked.');
-    error.statusCode = 422;
-    throw error;
   }
 
   try {
@@ -135,18 +123,22 @@ export const editPost = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
+    console.log(post.imageUrl);
+    console.log(imageUrl);
     if (post.creator._id.toString() !== req.userId) {
       const error = new Error('Not authorized.');
       error.statusCode = 403;
       throw error;
     }
-    if (imageUrl !== post.imageUrl) {
-      clearImage(post.imageUrl);
+    if (post.imageUrl && imageUrl) {
+      if (imageUrl !== post.imageUrl) {
+        clearImage(post.imageUrl);
+      }
     }
 
     post.content = content;
-    post.imageUrl = imageUrl;
+    post.imageUrl = imageUrl || null;
+
     const result = await post.save();
 
     io.getIo().emit('posts', {
@@ -179,7 +171,9 @@ export const deletePost = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    clearImage(post.imageUrl);
+    if (post.imageUrl) {
+      clearImage(post.imageUrl);
+    }
 
     const postDeleted = await Post.findByIdAndRemove(postId);
     const user = await User.findById(req.userId);

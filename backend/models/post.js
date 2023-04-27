@@ -8,7 +8,7 @@ const postSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      required: true,
+      required: false,
     },
     creator: {
       type: Types.ObjectId,
