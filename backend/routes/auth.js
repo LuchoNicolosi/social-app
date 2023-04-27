@@ -22,7 +22,7 @@ router.post(
           }
         });
       }),
-    body('name').isLength({ min: 3, max: 10 }).trim().not().isEmpty(),
+    body('name').isLength({ min: 3, max: 15 }).trim().not().isEmpty(),
     body('password').trim().isLength({ min: 5 }),
     body('userName')
       .trim()

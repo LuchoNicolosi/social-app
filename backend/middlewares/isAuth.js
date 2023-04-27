@@ -23,5 +23,6 @@ export const isAuth = (req, res, next) => {
   }
 
   req.userId = tokenVerify.userId;
+
   next();
 };
