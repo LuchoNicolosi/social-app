@@ -5,10 +5,7 @@ import { DeletePost } from './deletePost';
 import { io } from 'socket.io-client';
 import { useQueryClient } from '@tanstack/react-query';
 
-
 export const Posts = ({ post, token, userId }) => {
-
-
   const queryClient = useQueryClient();
   const socket = io('http://localhost:8080');
 
@@ -50,18 +47,21 @@ export const Posts = ({ post, token, userId }) => {
           />
 
           <Flex justifyContent="space-between" alignItems="flex-start" w="full">
-            <Flex gap={2}>
+            <Flex>
               <Box>
-                <Text fontWeight="bold" fontSize="xl">
-                  {post.creator.name}
-                </Text>
+                <Flex gap={2}>
+                  <Text fontWeight="bold" fontSize="xl">
+                    {post.creator.name}
+                  </Text>
+                  <Box fontSize="xl" color="gray">
+                    <Text>
+                      · {new Date(post.createdAt).toLocaleDateString('en-GB')}
+                    </Text>
+                  </Box>
+                </Flex>
+
                 <Text alignItems="center" color="gray">
                   @{post.creator.userName}
-                </Text>
-              </Box>
-              <Box fontSize="xl" color="gray">
-                <Text>
-                  · {new Date(post.createdAt).toLocaleDateString('en-GB')}
                 </Text>
               </Box>
             </Flex>

@@ -5,6 +5,8 @@ import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
 import { CreatePost } from '../../components/createPost';
 import { Flex, Text } from '@chakra-ui/react';
 
+
+
 export default function Home() {
   const token = Cookies.get('jwt');
   const userId = Cookies.get('userId');

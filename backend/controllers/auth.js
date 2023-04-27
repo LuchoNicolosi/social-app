@@ -78,10 +78,7 @@ export const login = async (req, res, next) => {
         userName: userName,
         userId: user._id.toString(),
       },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: '1h',
-      }
+      process.env.JWT_SECRET
     );
 
     res.status(201).json({

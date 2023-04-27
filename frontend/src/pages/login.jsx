@@ -67,9 +67,6 @@ const Login = () => {
 
     Cookies.set('jwt', data.token);
     Cookies.set('userId', data.userId);
-    const remainingMilliseconds = 60 * 60 * 1000;
-    const expiryDate = new Date(new Date().getTime() + remainingMilliseconds);
-    Cookies.set('expiryDate', expiryDate.toISOString());
     router.push('/');
   };
   return (
