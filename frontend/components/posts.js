@@ -4,7 +4,7 @@ import { EditPost } from './editPost';
 import { DeletePost } from './deletePost';
 import { io } from 'socket.io-client';
 import { useQueryClient } from '@tanstack/react-query';
-i
+
 
 export const Posts = ({ post, token, userId }) => {
 

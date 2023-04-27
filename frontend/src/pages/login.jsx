@@ -93,7 +93,7 @@ const Login = () => {
             {isToggle ? <SunIcon /> : <MoonIcon />}
           </Button>
         </Flex>
-        <Heading mb={6}>Login</Heading>
+        <Heading mb={6}>Log in</Heading>
         <FormLabel>Username</FormLabel>
         <Input
           id="userName"
