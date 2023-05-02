@@ -47,7 +47,7 @@ export const createPost = async (req, res, next) => {
     const error = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors.array();
-    throw error;
+    return next(error);
   }
 
   const content = req.body.content;
@@ -107,12 +107,13 @@ export const editPost = async (req, res, next) => {
     const error = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors.array();
-    throw error;
+    return next(error);
   }
 
   const content = req.body.content;
-  let imageUrl = req.file;
-  if (req.file && imageUrl) {
+  let imageUrl = req.body.imageUrl;
+
+  if (req.file) {
     imageUrl = req.file.path.replace('\\', '/');
   }
 
@@ -123,8 +124,7 @@ export const editPost = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    console.log(post.imageUrl);
-    console.log(imageUrl);
+
     if (post.creator._id.toString() !== req.userId) {
       const error = new Error('Not authorized.');
       error.statusCode = 403;

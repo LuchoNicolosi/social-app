@@ -1,15 +1,28 @@
 import Cookies from 'js-cookie';
 import { Posts } from '../../components/posts';
-import { useRouter } from 'next/router';
-import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
+import {
+  QueryClient,
+  dehydrate,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { CreatePost } from '../../components/createPost';
 import { Flex, Text } from '@chakra-ui/react';
-
-
+import { Navigate } from '../../components/navigate';
+import { useEffect } from 'react';
+import { io } from 'socket.io-client';
 
 export default function Home() {
   const token = Cookies.get('jwt');
   const userId = Cookies.get('userId');
+  const socket = io('http://localhost:8080');
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socket.on('posts', () => {
+      queryClient.refetchQueries();
+    });
+  }, [queryClient]);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['posts'],
@@ -24,10 +37,13 @@ export default function Home() {
   if (data.posts.length === 0)
     return (
       <>
-        <Flex h="80vh" justifyContent="center" alignItems="center">
-          <Text>No posts found.</Text>
+        <Navigate />
+        <Flex w="full" alignItems="center" flexDirection="column">
+          <CreatePost token={token} />
+          <Text mt={6} alignItems="center">
+            No posts found.
+          </Text>
         </Flex>
-        <CreatePost token={token} />
       </>
     );
   if (isLoading) return <p>Loading posts...</p>;
@@ -35,7 +51,8 @@ export default function Home() {
 
   return (
     <Flex w="full" flexDirection="column" alignItems="center">
-      <CreatePost token={token} />
+      <Navigate />
+      <CreatePost userId={userId} token={token} />
       {data.posts?.map((post) => (
         <Posts key={post._id} token={token} userId={userId} post={post} />
       ))}

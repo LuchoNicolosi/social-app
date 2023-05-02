@@ -15,13 +15,12 @@ router.get('/posts', isAuth, getPosts);
 router.get('/post/:postId', isAuth, getPost);
 router.post(
   '/post',
-  [
-    body('content')
-      .isLength({ min: 5 })
-      .not()
-      .isEmpty()
-      .withMessage('Please enter a valid content'),
-  ], isAuth,
+  body('content')
+    .isLength({ min: 3 })
+    .withMessage('Enter minimum 3 characters.')
+    .not()
+    .isEmpty(),
+  isAuth,
   createPost
 );
 router.put(
@@ -32,7 +31,8 @@ router.put(
       .not()
       .isEmpty()
       .withMessage('Please enter a valid content'),
-  ], isAuth,
+  ],
+  isAuth,
   editPost
 );
 router.delete('/post/:postId', isAuth, deletePost);

@@ -2,33 +2,18 @@ import { Box, Button, Flex, Image, LinkBox, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { EditPost } from './editPost';
 import { DeletePost } from './deletePost';
-import { io } from 'socket.io-client';
-import { useQueryClient } from '@tanstack/react-query';
 
 export const Posts = ({ post, token, userId }) => {
-  const queryClient = useQueryClient();
-  const socket = io('http://localhost:8080');
-
-  socket.on('posts', (data) => {
-    if (data.action === 'create') {
-      queryClient.refetchQueries();
-    } else if (data.action === 'update') {
-      queryClient.refetchQueries();
-    } else if (data.action === 'delete') {
-      queryClient.refetchQueries();
-    }
-  });
-
   return (
-    <Box w="xl">
+    <Box w={{ base: 'full', md: 'xl' }}>
       <Flex
         alignItems="center"
         flexDirection="column"
-        borderRight="1px"
-        borderLeft="1px"
+        borderRight={{ md: '1px' }}
+        borderLeft={{ md: '1px' }}
         borderBottom="1px"
-        p={8}
         borderColor="gray"
+        p={8}
       >
         <Flex
           w="full"
@@ -39,48 +24,53 @@ export const Posts = ({ post, token, userId }) => {
         >
           <Image
             borderRadius="full"
-            w="70px"
-            h="70px"
+            w="50px"
+            h="50px"
             objectFit="cover"
             src={`http://localhost:8080/${post.creator.imageUrl}`}
             alt={post.creator.name}
           />
 
           <Flex justifyContent="space-between" alignItems="flex-start" w="full">
-            <Flex>
-              <Box>
-                <Flex gap={2}>
-                  <Text fontWeight="bold" fontSize="xl">
-                    {post.creator.name}
-                  </Text>
-                  <Box fontSize="xl" color="gray">
-                    <Text>
-                      · {new Date(post.createdAt).toLocaleDateString('en-GB')}
-                    </Text>
-                  </Box>
-                </Flex>
-
-                <Text alignItems="center" color="gray">
-                  @{post.creator.userName}
+            <Box>
+              <Flex gap={2}>
+                <Text fontWeight="bold" fontSize={{ md: 'xl' }}>
+                  {post.creator.name}
                 </Text>
-              </Box>
-            </Flex>
+                <Box
+                  fontSize="xl"
+                  color="gray"
+                  display={{ base: 'none', md: 'block' }}
+                >
+                  <Text>
+                    · {new Date(post.createdAt).toLocaleDateString('en-GB')}
+                  </Text>
+                </Box>
+              </Flex>
+
+              <Text alignItems="center" color="gray">
+                @{post.creator.userName}
+              </Text>
+            </Box>
             {post.creator._id === userId && (
               <Flex alignItems="flex-start" gap={2}>
-                <EditPost postId={post._id} token={token} />
+                <EditPost post={post} postId={post._id} token={token} />
                 <DeletePost postId={post._id} token={token} />
               </Flex>
             )}
           </Flex>
         </Flex>
         <Flex w="full">
-          <Text fontSize="xl">{post.content}</Text>
+          <Text fontSize={{ md: 'xl' }}>{post.content}</Text>
         </Flex>
 
         {post.imageUrl && (
           <Image
             mt={6}
-            w="3xl"
+            borderRadius="10px"
+            w={{ md: 'xl' }}
+            h={{ md: 'xl' }}
+            objectFit="cover"
             src={`http://localhost:8080/${post.imageUrl}`}
             alt={post.creator.name}
           />

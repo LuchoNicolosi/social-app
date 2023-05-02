@@ -1,14 +1,18 @@
 import {
   Button,
   Flex,
+  FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   Text,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { MoonIcon, SunIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link } from '@chakra-ui/next-js';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -23,6 +27,11 @@ const Login = () => {
   const router = useRouter();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [userNameError, setUserNameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleClick = () => setShow(!show);
 
   const userNameChange = (e) => {
     setUserName(e.target.value);
@@ -39,6 +48,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setUserNameError(false);
+    setPasswordError(false);
+
     const res = await fetch('http://localhost:8080/api/v1/auth/login', {
       method: 'POST',
       headers: {
@@ -51,20 +63,17 @@ const Login = () => {
     });
 
     if (res.status === 422) {
-      throw new Error(
-        "Validation failed. Make sure the email address isn't used yet!"
-      );
-    }
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error('Login a user failed!');
+      const errorData = await res.json();
+      if (errorData.errorMessage === 'Username does not exist!') {
+        setUserNameError(errorData.errorMessage);
+      } else if (errorData.errorMessage === 'Incorrect password!') {
+        setUserNameError(false);
+        setPasswordError(errorData.errorMessage);
+      }
+      return;
     }
 
     const data = await res.json();
-
-    if (!data) {
-      throw new Error('Something went wrong!');
-    }
-
     Cookies.set('jwt', data.token);
     Cookies.set('userId', data.userId);
     router.push('/');
@@ -80,7 +89,12 @@ const Login = () => {
         onSubmit={handleSubmit}
         as="form"
       >
-        <Flex position="absolute" top="0" right="0" p="1.5em">
+        <Flex
+          position="absolute"
+          top="0"
+          right="0"
+          p={{ base: '0.5em', md: '1.5em' }}
+        >
           <Button
             onClick={handleToggle}
             bg={bgButton}
@@ -91,25 +105,46 @@ const Login = () => {
           </Button>
         </Flex>
         <Heading mb={6}>Log in</Heading>
-        <FormLabel>Username</FormLabel>
-        <Input
-          id="userName"
-          placeholder="@jhondoe"
-          variant="filled"
-          mb={3}
-          type="text"
-          onChange={userNameChange}
-        />
+        <FormControl mb={3} isInvalid={userNameError}>
+          <FormLabel>Username</FormLabel>
+          <Input
+            id="userName"
+            name="userName"
+            isInvalid={userNameError}
+            errorBorderColor="crimson"
+            placeholder="@jhondoe"
+            variant="filled"
+            type="text"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+          {userNameError && (
+            <FormErrorMessage>{userNameError}</FormErrorMessage>
+          )}
+        </FormControl>
 
-        <FormLabel>Password</FormLabel>
-        <Input
-          id="password"
-          placeholder="**********"
-          variant="filled"
-          mb={6}
-          type="password"
-          onChange={passwordChange}
-        />
+        <FormControl mb={6} isInvalid={passwordError}>
+          <FormLabel>Password</FormLabel>
+          <InputGroup>
+            <Input
+              id="password"
+              name="password"
+              isInvalid={passwordError}
+              errorBorderColor="crimson"
+              placeholder="**********"
+              variant="filled"
+              type={show ? 'text' : 'password'}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? <ViewOffIcon /> : <ViewIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {passwordError && (
+            <FormErrorMessage>{passwordError}</FormErrorMessage>
+          )}
+        </FormControl>
 
         <Button mb={3} colorScheme="teal" type="submit">
           Login

@@ -18,19 +18,28 @@ router.post(
       .custom((value, { req }) => {
         return User.findOne({ email: value }).then((user) => {
           if (user) {
-            return Promise.reject('Email adress already exists!');
+            return Promise.reject('Email adress already exists!.');
           }
         });
       }),
-    body('name').isLength({ min: 3, max: 15 }).trim().not().isEmpty(),
-    body('password').trim().isLength({ min: 5 }),
+    body('name')
+      .isLength({ min: 3, max: 15 })
+      .withMessage('Minimum 3 characters, and maximum 15.')
+      .trim()
+      .not()
+      .isEmpty(),
+    body('password')
+      .trim()
+      .isLength({ min: 5 })
+      .withMessage('Minimum 5 characters.'),
     body('userName')
       .trim()
       .isLength({ min: 5, max: 15 })
+      .withMessage('Minimum 5 characters, and maximum 15')
       .custom((value, { req }) => {
         return User.findOne({ userName: value }).then((user) => {
           if (user) {
-            return Promise.reject('Username already exists!');
+            return Promise.reject('Username already exists!.');
           }
         });
       }),

@@ -9,12 +9,12 @@ export const signup = async (req, res, next) => {
     const error = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors.array();
-    throw error;
+    return next(error);
   }
   if (!req.file) {
     const error = new Error('No image provided.');
     error.statusCode = 422;
-    throw error;
+    return next(error);
   }
   const { email, name, userName, password } = req.body;
   let imageUrl = req.file;

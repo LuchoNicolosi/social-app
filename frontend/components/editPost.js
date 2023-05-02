@@ -14,33 +14,32 @@ import {
   Input,
   Flex,
   Box,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import FormData from 'form-data';
-import { useRouter } from 'next/router';
+import { BsImage } from 'react-icons/bs';
+import { Modal as ModalAntd, Space, Upload } from 'antd';
 import { useEffect, useState } from 'react';
+import { getBase64 } from '../util/image';
 
-export const EditPost = ({ postId, token }) => {
+export const EditPost = ({ postId, token, post }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
+  const [contentError, setContentError] = useState(false);
+  const [errors, setErrors] = useState([]);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [showUploadList, setShowUploadList] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/home/post/' + postId, {
-      headers: {
-        Authorization: token,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then(({ post }) => {
-        setContent(post.content);
-        if (post.imageUrl) {
-          setImage(post.imageUrl);
-        }
-      })
-      .catch((err) => console.log(err));
+    setContent(post.content);
+    if (post.imageUrl) {
+      setImage(post.imageUrl);
+    }
   }, []);
 
   const queryClient = useQueryClient();
@@ -59,6 +58,19 @@ export const EditPost = ({ postId, token }) => {
     },
   });
 
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf('/') + 1)
+    );
+  };
+
+  const handleCancel = () => setPreviewOpen(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,21 +78,21 @@ export const EditPost = ({ postId, token }) => {
     formData.append('content', content);
     formData.append('imageUrl', image || null);
 
-    try {
-      await mutation.mutateAsync(formData);
-      setContent(content);
-      setImage(image || null);
-
-      onClose();
-    } catch (error) {
-      console.log(error);
+    const res = await mutation.mutateAsync(formData);
+    if (res.errorMessage) {
+      setErrors(res.data);
+      setContentError(!contentError);
+      return;
     }
+    setContent(content);
+    setImage(image || null);
+    onClose();
   };
 
   return (
     <Box>
       <Box>
-        <Button onClick={onOpen}>
+        <Button w={{ base: 2 }} onClick={onOpen}>
           <EditIcon />
         </Button>
       </Box>
@@ -90,27 +102,72 @@ export const EditPost = ({ postId, token }) => {
           <ModalHeader>Edit your post</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl isInvalid={contentError}>
               <FormLabel>Content</FormLabel>
               <Input
                 id="content"
                 name="content"
                 value={content}
+                isInvalid={contentError}
+                errorBorderColor="crimson"
                 onChange={(e) => {
                   setContent(e.target.value);
                 }}
               />
+              {contentError && (
+                <FormErrorMessage>
+                  {errors.map((e) => {
+                    if (e.value === '' && e.path === 'content') {
+                      return <>{e.msg}</>;
+                    } else if (e.path === 'content') {
+                      return <>{e.msg}</>;
+                    }
+                  })}
+                </FormErrorMessage>
+              )}
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Image</FormLabel>
-              <Input
-                onChange={(e) => {
-                  setImage(e.target.files[0]);
-                }}
-                type="file"
-                id="imageUrl"
-                name="imageUrl"
-              />
+              <Flex ml={3} h="full" alignItems="center">
+                <Space
+                  direction="vertical"
+                  style={{
+                    width: '100%',
+                  }}
+                  size="large"
+                >
+                  <Upload
+                    onPreview={handlePreview}
+                    showUploadList={showUploadList}
+                    listType="picture-card"
+                    maxCount={1}
+                    id="imageUrl"
+                    name="imageUrl"
+                    onChange={(e) => {
+                      setShowUploadList(true);
+                      setImage(e.file.originFileObj);
+                    }}
+                  >
+                    <Button _hover={{ bg: 'transparent' }} variant="ghost">
+                      <BsImage />
+                    </Button>
+                  </Upload>
+                  <ModalAntd
+                    open={previewOpen}
+                    title={previewTitle}
+                    footer={null}
+                    onCancel={handleCancel}
+                  >
+                    <img
+                      alt="example"
+                      style={{
+                        width: '100%',
+                      }}
+                      src={previewImage}
+                    />
+                  </ModalAntd>
+                </Space>
+              </Flex>
             </FormControl>
           </ModalBody>
 
