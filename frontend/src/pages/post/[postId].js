@@ -56,7 +56,7 @@ const Post = ({ post }) => {
               mt={6}
               w={550}
               borderRadius="10px"
-              src={`http://localhost:8080/${post.imageUrl}`}
+              src={`${process.env.SERVER_URL}/${post.imageUrl}`}
               alt={post.creator.name}
             />
           )}
@@ -71,11 +71,14 @@ export default Post;
 export async function getServerSideProps({ params, req }) {
   const { postId } = params;
   const token = req.cookies.jwt;
-  const data = await fetch('http://localhost:8080/api/v1/home/post/' + postId, {
-    headers: {
-      Authorization: token,
-    },
-  });
+  const data = await fetch(
+    process.env.SERVER_URL + '/api/v1/home/post/' + postId,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
   const { post } = await data.json();
   return {
     props: {

@@ -27,7 +27,7 @@ export const CreatePost = ({ token }) => {
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
-      return await fetch(process.env.CLIENT_URI + '/api/v1/home/post', {
+      return await fetch(process.env.SERVER_URL + '/api/v1/home/post', {
         method: 'POST',
         headers: {
           Authorization: token,

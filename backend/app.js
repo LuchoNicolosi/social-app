@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);
 const io = SocketServer.init(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL,
   },
 });
 
@@ -66,7 +66,7 @@ app.use(
 
 app.use('/api/v1', routes);
 
-app.use(morgan('combined'))
+app.use(morgan('combined'));
 
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;

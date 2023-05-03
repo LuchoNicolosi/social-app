@@ -17,7 +17,7 @@ export const DeletePost = ({ postId, token }) => {
 
   const handleDeletePost = async () => {
     try {
-      await fetch(process.env.CLIENT_URI + '/api/v1/home/post/' + postId, {
+      await fetch(process.env.SERVER_URL + '/api/v1/home/post/' + postId, {
         method: 'DELETE',
         headers: {
           Authorization: token,

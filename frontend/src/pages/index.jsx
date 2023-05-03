@@ -15,7 +15,7 @@ import { io } from 'socket.io-client';
 export default function Home() {
   const token = Cookies.get('jwt');
   const userId = Cookies.get('userId');
-  const socket = io(process.env.CLIENT_URI);
+  const socket = io(process.env.SERVER_URL);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Home() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['posts'],
     queryFn: () =>
-      fetch(process.env.CLIENT_URI + '/api/v1/home/posts', {
+      fetch(process.env.SERVER_URL + '/api/v1/home/posts', {
         headers: {
           Authorization: token,
         },
@@ -64,7 +64,7 @@ export async function getServerSideProps({ req }) {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(['posts'], () =>
-    fetch(process.env.CLIENT_URI + '/api/v1/home/posts', {
+    fetch(process.env.SERVER_URL + '/api/v1/home/posts', {
       headers: {
         Authorization: token,
       },

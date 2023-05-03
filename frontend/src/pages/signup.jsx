@@ -70,7 +70,7 @@ const Signup = () => {
     formData.append('password', password);
     formData.append('imageUrl', imageUrl);
 
-    const res = await fetch(process.env.CLIENT_URI + '/api/v1/auth/signup', {
+    const res = await fetch(process.env.SERVER_URL + '/api/v1/auth/signup', {
       method: 'POST',
       body: formData,
     });
