@@ -1,1 +1,0 @@
-web: node backend/app.js git push heroku master
