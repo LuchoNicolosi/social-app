@@ -2,11 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import routes from './routes/index.js';
+import routes from '../routes/index.js';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { SocketServer } from './socket.js';
+import { SocketServer } from '../socket.js';
 import http from 'http';
 import morgan from 'morgan';
 
