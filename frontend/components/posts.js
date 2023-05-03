@@ -27,7 +27,7 @@ export const Posts = ({ post, token, userId }) => {
             w="50px"
             h="50px"
             objectFit="cover"
-            src={`http://localhost:8080/${post.creator.imageUrl}`}
+            src={process.env.CLIENT_URI + '/' + post.creator.imageUrl}
             alt={post.creator.name}
           />
 
@@ -71,7 +71,7 @@ export const Posts = ({ post, token, userId }) => {
             w={{ md: 'xl' }}
             h={{ md: 'xl' }}
             objectFit="cover"
-            src={`http://localhost:8080/${post.imageUrl}`}
+            src={process.env.CLIENT_URI + '/' + post.imageUrl}
             alt={post.creator.name}
           />
         )}

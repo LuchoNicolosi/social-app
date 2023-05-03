@@ -4,13 +4,11 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  Text,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -72,7 +70,7 @@ const Signup = () => {
     formData.append('password', password);
     formData.append('imageUrl', imageUrl);
 
-    const res = await fetch('http://localhost:8080/api/v1/auth/signup', {
+    const res = await fetch(process.env.CLIENT_URI + '/api/v1/auth/signup', {
       method: 'POST',
       body: formData,
     });

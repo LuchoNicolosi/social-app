@@ -46,7 +46,7 @@ export const EditPost = ({ postId, token, post }) => {
 
   const mutation = useMutation({
     mutationFn: (formData) =>
-      fetch('http://localhost:8080/api/v1/home/post/' + postId, {
+      fetch(process.env.CLIENT_URI + '/api/v1/home/post/' + postId, {
         method: 'PUT',
         headers: {
           Authorization: token,
