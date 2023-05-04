@@ -26,7 +26,7 @@ import { getBase64 } from '../util/image';
 export const EditPost = ({ postId, token, post }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [content, setContent] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState();
   const [contentError, setContentError] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -78,6 +78,7 @@ export const EditPost = ({ postId, token, post }) => {
     formData.append('content', content);
     formData.append('imageUrl', image || null);
 
+    console.log(image);
     const res = await mutation.mutateAsync(formData);
     if (res.errorMessage) {
       setErrors(res.data);
@@ -93,7 +94,12 @@ export const EditPost = ({ postId, token, post }) => {
   return (
     <Box>
       <Box>
-        <Button w={{ base: 2 }} onClick={onOpen}>
+        <Button
+          variant="ghost"
+          color="blue.500"
+          w={{ base: 2 }}
+          onClick={onOpen}
+        >
           <EditIcon />
         </Button>
       </Box>

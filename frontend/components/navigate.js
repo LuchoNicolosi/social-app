@@ -1,6 +1,6 @@
 import { handleLogout } from '@/pages';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Button, Flex, useColorMode } from '@chakra-ui/react';
+import { Box, Button, Flex, useColorMode } from '@chakra-ui/react';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -30,25 +30,22 @@ export const Navigate = () => {
           </Button>
         </Link>
       </Flex>
-      <Flex gap={2}>
-        <Button
-          onClick={handleToggle}
-          bg="white"
-          color="black"
-          _hover={{ bg: 'gray.200' }}
-        >
+
+      <Box position="fixed" bottom={0} right={0} p={6}>
+        <Button variant="outline" onClick={handleToggle}>
           {isToggle ? <SunIcon /> : <MoonIcon />}
         </Button>
-        <Button
-          bg="white"
-          color="black"
-          _hover={{ bg: 'gray.200' }}
-          fontWeight="bold"
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
-      </Flex>
+      </Box>
+
+      <Button
+        bg="white"
+        color="black"
+        _hover={{ bg: 'gray.200' }}
+        fontWeight="bold"
+        onClick={handleLogout}
+      >
+        Logout
+      </Button>
     </Flex>
   );
 };

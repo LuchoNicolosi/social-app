@@ -1,9 +1,17 @@
-import { Box, Button, Flex, Image, LinkBox, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Image,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import { EditPost } from './editPost';
 import { DeletePost } from './deletePost';
 
 export const Posts = ({ post, token, userId }) => {
+  const bgButtonPost = useColorModeValue('blue.500', 'blue.500');
   return (
     <Box w={{ base: 'full', md: 'xl' }}>
       <Flex
@@ -77,8 +85,8 @@ export const Posts = ({ post, token, userId }) => {
         )}
         <Box w="full" mt={6}>
           <Link href={'/post/' + post._id}>
-            <Button variant="link" color="blue.100">
-              Ver post
+            <Button variant="link" color="blue.500" fontWeight="bold">
+              See post
             </Button>
           </Link>
         </Box>

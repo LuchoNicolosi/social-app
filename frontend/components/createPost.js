@@ -161,7 +161,15 @@ export const CreatePost = ({ token }) => {
               </Flex>
             </FormControl>
             <Flex alignSelf="flex-end">
-              <Button isLoading={loading} type="submit">
+              <Button
+                bg="blue.500"
+                color="white"
+                _hover={{
+                  bg: 'blue.600',
+                }}
+                isLoading={loading}
+                type="submit"
+              >
                 Post
               </Button>
             </Flex>

@@ -35,13 +35,6 @@ const Login = () => {
 
   const handleClick = () => setShow(!show);
 
-  const userNameChange = (e) => {
-    setUserName(e.target.value);
-  };
-  const passwordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
   const handleToggle = () => {
     setToggle(!isToggle);
     return toggleColorMode();
@@ -118,7 +111,6 @@ const Login = () => {
               isInvalid={userNameError}
               errorBorderColor="crimson"
               placeholder="jhondoe"
-              variant="filled"
               type="text"
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -137,7 +129,6 @@ const Login = () => {
               isInvalid={passwordError}
               errorBorderColor="crimson"
               placeholder="**********"
-              variant="filled"
               type={show ? 'text' : 'password'}
               onChange={(e) => setPassword(e.target.value)}
             />

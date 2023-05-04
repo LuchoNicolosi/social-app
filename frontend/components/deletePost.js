@@ -34,7 +34,7 @@ export const DeletePost = ({ postId, token }) => {
 
   return (
     <>
-      <Button w={{ base: 2 }} onClick={onOpen}>
+      <Button variant="ghost" color="red.400" w={{ base: 2 }} onClick={onOpen}>
         <DeleteIcon />
       </Button>
 

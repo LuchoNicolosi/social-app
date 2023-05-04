@@ -145,7 +145,6 @@ const Signup = () => {
             errorBorderColor="crimson"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="jhondoe@socialapp.com"
-            variant="filled"
             type="email"
           />
           {emailError && (
@@ -169,7 +168,6 @@ const Signup = () => {
             isInvalid={nameError}
             errorBorderColor="crimson"
             placeholder="Your name"
-            variant="filled"
             type="text"
             onChange={(e) => setName(e.target.value)}
           />
@@ -241,7 +239,6 @@ const Signup = () => {
               isInvalid={userNameError}
               errorBorderColor="crimson"
               placeholder="jhondoe"
-              variant="filled"
               type="text"
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -268,7 +265,6 @@ const Signup = () => {
               isInvalid={passwordError}
               errorBorderColor="crimson"
               placeholder="**********"
-              variant="filled"
               type={show ? 'text' : 'password'}
               onChange={(e) => setPassword(e.target.value)}
             />

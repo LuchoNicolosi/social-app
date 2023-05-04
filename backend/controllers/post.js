@@ -128,7 +128,7 @@ export const editPost = async (req, res, next) => {
   }
   let imageUploaded;
   try {
-    if (imageUrl) {
+    if (req.file) {
       imageUploaded = await cloudinary.uploader.upload(imageUrl, {
         folder: 'social-posts/posts',
       });
@@ -146,14 +146,16 @@ export const editPost = async (req, res, next) => {
       throw error;
     }
 
-    if (post.imageUrl.public_id && imageUploaded.public_id) {
+    if (post.imageUrl && imageUploaded) {
       if (imageUploaded.public_id !== post.imageUrl.public_id) {
         await cloudinary.uploader.destroy(post.imageUrl.public_id);
       }
     }
 
     post.content = content;
-    post.imageUrl = imageUploaded || post.imageUrl;
+    if (req.file) {
+      post.imageUrl = imageUploaded;
+    }
 
     const result = await post.save();
 
