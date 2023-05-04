@@ -22,6 +22,7 @@ export const CreatePost = ({ token }) => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [showUploadList, setShowUploadList] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -55,7 +56,7 @@ export const CreatePost = ({ token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const formData = new FormData();
     formData.append('content', content);
     if (image) {
@@ -74,6 +75,7 @@ export const CreatePost = ({ token }) => {
     }
     setContent('');
     setShowUploadList(false);
+    setLoading(false);
   };
 
   return (
@@ -159,7 +161,9 @@ export const CreatePost = ({ token }) => {
               </Flex>
             </FormControl>
             <Flex alignSelf="flex-end">
-              <Button type="submit">Post</Button>
+              <Button isLoading={loading} type="submit">
+                Post
+              </Button>
             </Flex>
           </Flex>
         </Box>

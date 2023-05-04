@@ -29,7 +29,7 @@ export const EditPost = ({ postId, token, post }) => {
   const [image, setImage] = useState('');
   const [contentError, setContentError] = useState(false);
   const [errors, setErrors] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -73,7 +73,7 @@ export const EditPost = ({ postId, token, post }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const formData = new FormData();
     formData.append('content', content);
     formData.append('imageUrl', image || null);
@@ -84,6 +84,7 @@ export const EditPost = ({ postId, token, post }) => {
       setContentError(!contentError);
       return;
     }
+    setLoading(false);
     setContent(content);
     setImage(image || null);
     onClose();
@@ -172,7 +173,7 @@ export const EditPost = ({ postId, token, post }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button type="submit" colorScheme="blue" mr={3}>
+            <Button isLoading={loading} type="submit" colorScheme="blue" mr={3}>
               Save
             </Button>
             <Button onClick={onClose}>Cancel</Button>

@@ -1,28 +1,30 @@
 import { validationResult } from 'express-validator';
 import { User } from '../models/user.js';
+import cloudinary from '../util/cloudinary.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error('Validation failed');
-    error.statusCode = 422;
-    error.data = errors.array();
-    return next(error);
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   const error = new Error('Validation failed');
+  //   error.statusCode = 422;
+  //   error.data = errors.array();
+  //   return next(error);
+  // }
   if (!req.file) {
     const error = new Error('No image provided.');
     error.statusCode = 422;
     return next(error);
   }
   const { email, name, userName, password } = req.body;
-  let imageUrl = req.file;
-  if (req.file) {
-    imageUrl = req.file.path.replace('\\', '/');
-  }
+  let imageUrl = req.file.path;
 
   try {
+    const imageUploaded = await cloudinary.uploader.upload(imageUrl, {
+      folder: 'social-posts/users',
+    });
+
     const hashedPassword = await bcrypt.hash(password, 12);
     if (!hashedPassword) {
       const error = new Error('Something went wrong!!');
@@ -33,7 +35,7 @@ export const signup = async (req, res, next) => {
       email: email,
       name: name,
       userName: userName,
-      imageUrl: imageUrl,
+      imageUrl: imageUploaded.secure_url,
       password: hashedPassword,
     });
 
@@ -47,9 +49,10 @@ export const signup = async (req, res, next) => {
     res.status(200).json({
       message: 'Signup successfully!!!',
       userId: result._id,
+      file: imageUploaded.secure_url,
     });
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };
 

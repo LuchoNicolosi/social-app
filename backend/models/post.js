@@ -7,8 +7,14 @@ const postSchema = new Schema(
       required: true,
     },
     imageUrl: {
-      type: String,
-      required: false,
+      public_id: {
+        type: String,
+        required: false,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
     },
     creator: {
       type: Types.ObjectId,

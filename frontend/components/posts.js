@@ -27,7 +27,7 @@ export const Posts = ({ post, token, userId }) => {
             w="50px"
             h="50px"
             objectFit="cover"
-            src={process.env.SERVER_URL + '/' + post.creator.imageUrl}
+            src={post.creator.imageUrl}
             alt={post.creator.name}
           />
 
@@ -71,7 +71,7 @@ export const Posts = ({ post, token, userId }) => {
             w={{ md: 'xl' }}
             h={{ md: 'xl' }}
             objectFit="cover"
-            src={process.env.SERVER_URL + '/' + post.imageUrl}
+            src={post.imageUrl.url}
             alt={post.creator.name}
           />
         )}

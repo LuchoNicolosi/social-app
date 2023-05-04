@@ -3,6 +3,7 @@ import { Post } from '../models/post.js';
 import { User } from '../models/user.js';
 import { clearImage } from '../util/clearImage.js';
 import { SocketServer as io } from '../socket.js';
+import cloudinary from '../util/cloudinary.js';
 
 export const getPosts = async (req, res, next) => {
   try {
@@ -51,19 +52,22 @@ export const createPost = async (req, res, next) => {
   }
 
   const content = req.body.content;
-  let imageUrl = req.file;
-
-  if (req.file && imageUrl) {
-    imageUrl = req.file.path.replace('\\', '/');
-  }
-
-  const post = new Post({
-    content: content,
-    imageUrl: imageUrl || null,
-    creator: req.userId,
-  });
+  let imageUrl = req.file.path;
 
   try {
+    const imageUploaded = await cloudinary.uploader.upload(imageUrl, {
+      folder: 'social-posts/posts',
+    });
+
+    const post = new Post({
+      content: content,
+      imageUrl: {
+        public_id: imageUploaded.public_id,
+        url: imageUploaded.secure_url,
+      },
+      creator: req.userId,
+    });
+
     if (!post) {
       const error = new Error('Something went wrong.');
       error.statusCode = 404;
@@ -111,13 +115,18 @@ export const editPost = async (req, res, next) => {
   }
 
   const content = req.body.content;
-  let imageUrl = req.body.imageUrl;
-
+  let imageUrl;
   if (req.file) {
-    imageUrl = req.file.path.replace('\\', '/');
+    imageUrl = req.file.path;
   }
-
+  
+  let imageUploaded;
   try {
+    if (imageUrl) {
+      imageUploaded = await cloudinary.uploader.upload(imageUrl, {
+        folder: 'social-posts/posts',
+      });
+    }
     const post = await Post.findById(postId).populate('creator');
     if (!post) {
       const error = new Error('This posts not exits!');
@@ -130,14 +139,15 @@ export const editPost = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    if (post.imageUrl && imageUrl) {
-      if (imageUrl !== post.imageUrl) {
-        clearImage(post.imageUrl);
+
+    if (post.imageUrl && imageUploaded) {
+      if (imageUploaded.public_id !== post.imageUrl.public_id) {
+        await cloudinary.uploader.destroy(post.imageUrl.public_id);
       }
     }
 
     post.content = content;
-    post.imageUrl = imageUrl || null;
+    post.imageUrl = imageUploaded || post.imageUrl;
 
     const result = await post.save();
 
@@ -172,7 +182,7 @@ export const deletePost = async (req, res, next) => {
       throw error;
     }
     if (post.imageUrl) {
-      clearImage(post.imageUrl);
+      await cloudinary.uploader.destroy(post.imageUrl.public_id);
     }
 
     const postDeleted = await Post.findByIdAndRemove(postId);

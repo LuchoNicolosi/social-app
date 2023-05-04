@@ -10,12 +10,14 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 export const DeletePost = ({ postId, token }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(false);
   const cancelRef = useRef();
 
   const handleDeletePost = async () => {
+    setLoading(true);
     try {
       await fetch(process.env.SERVER_URL + '/api/v1/home/post/' + postId, {
         method: 'DELETE',
@@ -23,6 +25,7 @@ export const DeletePost = ({ postId, token }) => {
           Authorization: token,
         },
       });
+      setLoading(false);
       onClose();
     } catch (error) {
       console.log(error);
@@ -54,7 +57,12 @@ export const DeletePost = ({ postId, token }) => {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDeletePost} ml={3}>
+              <Button
+                isLoading={loading}
+                colorScheme="red"
+                onClick={handleDeletePost}
+                ml={3}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>
