@@ -34,7 +34,7 @@ const Signup = () => {
   const [userNameError, setUserNameErrorr] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [imageUrlError, setImageUrlError] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -63,6 +63,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append('email', email);
     formData.append('name', name);
@@ -94,9 +95,10 @@ const Signup = () => {
       } else if (!errorsResponse.data) {
         setImageUrlError(errorsResponse.errorMessage);
       }
-    } else {
-      router.push('/login');
     }
+    
+    setLoading(false);
+    router.push('/login');
   };
   const handleToggle = () => {
     setToggle(!isToggle);
@@ -284,7 +286,7 @@ const Signup = () => {
           )}
         </FormControl>
 
-        <Button mb={3} colorScheme="teal" type="submit">
+        <Button isLoading={loading} mb={3} colorScheme="teal" type="submit">
           Sign up
         </Button>
         <Box>

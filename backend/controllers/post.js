@@ -52,18 +52,25 @@ export const createPost = async (req, res, next) => {
   }
 
   const content = req.body.content;
-  let imageUrl = req.file.path;
+  let imageUrl;
+  if (req.file) {
+    imageUrl = req.file.path;
+  }
+
+  let imageUploaded;
 
   try {
-    const imageUploaded = await cloudinary.uploader.upload(imageUrl, {
-      folder: 'social-posts/posts',
-    });
+    if (imageUrl) {
+      imageUploaded = await cloudinary.uploader.upload(imageUrl, {
+        folder: 'social-posts/posts',
+      });
+    }
 
     const post = new Post({
       content: content,
       imageUrl: {
-        public_id: imageUploaded.public_id,
-        url: imageUploaded.secure_url,
+        public_id: imageUploaded?.public_id || null,
+        url: imageUploaded?.secure_url || null,
       },
       creator: req.userId,
     });
@@ -119,7 +126,6 @@ export const editPost = async (req, res, next) => {
   if (req.file) {
     imageUrl = req.file.path;
   }
-  
   let imageUploaded;
   try {
     if (imageUrl) {
@@ -140,7 +146,7 @@ export const editPost = async (req, res, next) => {
       throw error;
     }
 
-    if (post.imageUrl && imageUploaded) {
+    if (post.imageUrl.public_id && imageUploaded.public_id) {
       if (imageUploaded.public_id !== post.imageUrl.public_id) {
         await cloudinary.uploader.destroy(post.imageUrl.public_id);
       }
@@ -181,7 +187,7 @@ export const deletePost = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    if (post.imageUrl) {
+    if (post.imageUrl.public_id) {
       await cloudinary.uploader.destroy(post.imageUrl.public_id);
     }
 

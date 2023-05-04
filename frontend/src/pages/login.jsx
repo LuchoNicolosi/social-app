@@ -27,6 +27,7 @@ const Login = () => {
   const router = useRouter();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [show, setShow] = useState(false);
@@ -47,7 +48,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     setUserNameError(false);
     setPasswordError(false);
 
@@ -76,6 +77,7 @@ const Login = () => {
     const data = await res.json();
     Cookies.set('jwt', data.token);
     Cookies.set('userId', data.userId);
+    setLoading(false);
     router.push('/');
   };
   return (
@@ -146,7 +148,7 @@ const Login = () => {
           )}
         </FormControl>
 
-        <Button mb={3} colorScheme="teal" type="submit">
+        <Button isLoading={loading} mb={3} colorScheme="teal" type="submit">
           Login
         </Button>
         <Text>

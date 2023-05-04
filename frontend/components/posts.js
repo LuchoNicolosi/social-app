@@ -64,7 +64,7 @@ export const Posts = ({ post, token, userId }) => {
           <Text fontSize={{ md: 'xl' }}>{post.content}</Text>
         </Flex>
 
-        {post.imageUrl && (
+        {post.imageUrl.url && (
           <Image
             mt={6}
             borderRadius="10px"

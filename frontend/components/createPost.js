@@ -106,7 +106,7 @@ export const CreatePost = ({ token }) => {
               />
               {contentError && (
                 <FormErrorMessage>
-                  {errors.map((e) => {
+                  {errors?.map((e) => {
                     if (e.value === '' && e.path === 'content') {
                       return <>{e.msg}</>;
                     } else if (e.path === 'content') {
