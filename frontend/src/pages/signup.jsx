@@ -8,7 +8,9 @@ import {
   Heading,
   Input,
   InputGroup,
+  InputLeftAddon,
   InputRightElement,
+  Text,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -96,7 +98,7 @@ const Signup = () => {
         setImageUrlError(errorsResponse.errorMessage);
       }
     }
-    
+
     setLoading(false);
     router.push('/login');
   };
@@ -106,7 +108,7 @@ const Signup = () => {
   };
 
   return (
-    <Flex justifyContent="center" h="100vh" alignItems="center">
+    <Flex justifyContent="center" h="100vh" alignItems="center" px={4}>
       <Flex
         position="absolute"
         top="0"
@@ -231,27 +233,30 @@ const Signup = () => {
 
         <FormControl mb={3} isInvalid={userNameError}>
           <FormLabel>Username</FormLabel>
-          <Input
-            id="userName"
-            name="userName"
-            isInvalid={userNameError}
-            errorBorderColor="crimson"
-            placeholder="@jhondoe"
-            variant="filled"
-            type="text"
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          {userNameError && (
-            <FormErrorMessage>
-              {errors.map((e) => {
-                if (e.path === 'userName') {
-                  return <>{e.msg}</>;
-                } else if (e.value === '' && e.path === 'userName') {
-                  return <>{e.msg}</>;
-                }
-              })}
-            </FormErrorMessage>
-          )}
+          <InputGroup>
+            <InputLeftAddon children="@" />
+            <Input
+              id="userName"
+              name="userName"
+              isInvalid={userNameError}
+              errorBorderColor="crimson"
+              placeholder="jhondoe"
+              variant="filled"
+              type="text"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            {userNameError && (
+              <FormErrorMessage>
+                {errors.map((e) => {
+                  if (e.path === 'userName') {
+                    return <>{e.msg}</>;
+                  } else if (e.value === '' && e.path === 'userName') {
+                    return <>{e.msg}</>;
+                  }
+                })}
+              </FormErrorMessage>
+            )}
+          </InputGroup>
         </FormControl>
 
         <FormControl mb={6} isInvalid={passwordError}>
@@ -289,8 +294,14 @@ const Signup = () => {
         <Button isLoading={loading} mb={3} colorScheme="teal" type="submit">
           Sign up
         </Button>
-        <Box>
-          Do you already have an account?<Link href="/login"> Log in!</Link>
+        <Box textAlign="center">
+          <Text px={{ base: 4 }}>
+            Do you already have an account?
+            <Link href="/login" fontWeight="bold">
+              {' '}
+              Log in!
+            </Link>
+          </Text>
         </Box>
       </Flex>
     </Flex>

@@ -37,7 +37,7 @@ const Post = ({ post }) => {
               objectFit="cover"
               w="50px"
               h="50px"
-              src={`http://localhost:8080/${post.creator.imageUrl}`}
+              src={post.creator.imageUrl}
               alt={post.creator.name}
             />
             <Box>
@@ -51,12 +51,12 @@ const Post = ({ post }) => {
           <Text w="full" textAlign="start" fontSize="xl">
             {post.content}
           </Text>
-          {post.imageUrl && (
+          {post.imageUrl.url && (
             <Image
               mt={6}
               w={550}
               borderRadius="10px"
-              src={`${process.env.SERVER_URL}/${post.imageUrl}`}
+              src={post.imageUrl.url}
               alt={post.creator.name}
             />
           )}

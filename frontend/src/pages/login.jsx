@@ -7,6 +7,7 @@ import {
   Heading,
   Input,
   InputGroup,
+  InputLeftAddon,
   InputRightElement,
   Text,
   useColorMode,
@@ -81,7 +82,7 @@ const Login = () => {
     router.push('/');
   };
   return (
-    <Flex justifyContent="center" h="100vh" alignItems="center">
+    <Flex justifyContent="center" h="100vh" alignItems="center" px={4}>
       <Flex
         flexDir="column"
         textAlign="center"
@@ -109,19 +110,22 @@ const Login = () => {
         <Heading mb={6}>Log in</Heading>
         <FormControl mb={3} isInvalid={userNameError}>
           <FormLabel>Username</FormLabel>
-          <Input
-            id="userName"
-            name="userName"
-            isInvalid={userNameError}
-            errorBorderColor="crimson"
-            placeholder="@jhondoe"
-            variant="filled"
-            type="text"
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          {userNameError && (
-            <FormErrorMessage>{userNameError}</FormErrorMessage>
-          )}
+          <InputGroup>
+            <InputLeftAddon children="@" />
+            <Input
+              id="userName"
+              name="userName"
+              isInvalid={userNameError}
+              errorBorderColor="crimson"
+              placeholder="jhondoe"
+              variant="filled"
+              type="text"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            {userNameError && (
+              <FormErrorMessage>{userNameError}</FormErrorMessage>
+            )}
+          </InputGroup>
         </FormControl>
 
         <FormControl mb={6} isInvalid={passwordError}>
@@ -151,8 +155,11 @@ const Login = () => {
         <Button isLoading={loading} mb={3} colorScheme="teal" type="submit">
           Login
         </Button>
-        <Text>
-          You do not have an account? <Link href="/signup">Sign up!</Link>
+        <Text px={{ base: 6 }}>
+          You do not have an account?{' '}
+          <Link href="/signup" fontWeight="bold">
+            Sign up!
+          </Link>
         </Text>
       </Flex>
     </Flex>
