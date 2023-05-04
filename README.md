@@ -34,6 +34,6 @@ Create a .env.local file and set the environment variables (see .env.example for
 Run npm run dev to start the development server.
 
 ## Contributors
-*Luciano Nicolosi
+* Luciano Nicolosi
 
 
